@@ -6,7 +6,7 @@ const { Pool } = pg;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de la base de datos (Usa las variables de Render)
+// Configuración de la base de datos (Usa la URL de Render)
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
@@ -15,10 +15,9 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-// --- FUNCIÓN DE AUTOCARGA (Para no usar el CMD) ---
-const cargarDatosIniciales = async () => {
+// --- FUNCIÓN DE CARGA AUTOMÁTICA DE PRODUCTOS ---
+const inicializarDB = async () => {
     try {
-        // Crear la tabla si no existe
         await pool.query(`
             CREATE TABLE IF NOT EXISTS products (
                 id SERIAL PRIMARY KEY,
@@ -29,8 +28,6 @@ const cargarDatosIniciales = async () => {
                 icon VARCHAR(10)
             );
         `);
-
-        // Insertar productos solo si la tabla está vacía
         const res = await pool.query('SELECT COUNT(*) FROM products');
         if (res.rows[0].count === '0') {
             await pool.query(`
@@ -39,17 +36,15 @@ const cargarDatosIniciales = async () => {
                 ('Azúcar Classic 1kg', 900, 100, 'Almacén', '🍬'),
                 ('Leche Entera Larga Vida', 1100, 80, 'Lácteos', '🥛'),
                 ('Fideos Tallarín 500g', 800, 40, 'Fideos', '🍝'),
-                ('Queso Cremoso 1kg', 5400, 20, 'Fiambres', '🧀'),
-                ('Yerba Mate 500g', 2500, 60, 'Almacén', '🧉');
+                ('Queso Cremoso 1kg', 5400, 20, 'Fiambres', '🧀');
             `);
-            console.log("✅ Base de datos inicializada con éxito");
+            console.log("✅ Productos cargados automáticamente");
         }
     } catch (err) {
-        console.error("❌ Error en DB:", err);
+        console.error("Error inicializando DB:", err);
     }
 };
-
-cargarDatosIniciales();
+inicializarDB();
 
 // RUTA PARA EL CATÁLOGO
 app.get('/api/products', async (req, res) => {
@@ -64,5 +59,5 @@ app.get('/api/products', async (req, res) => {
 app.get('/', (req, res) => res.send('Servidor de Baratelli funcionando correctamente'));
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor en puerto ${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
