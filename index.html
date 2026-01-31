@@ -709,18 +709,18 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-                        <div class="product-icon">${product.icon || '📦'}</div>
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">$${p1.toLocaleString()}</div>
-                        <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
-                        <div class="product-actions">
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
-                                <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
-                                <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
-                            </div>
-                            <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
-                        </div>`;
+    <div class="product-icon">${product.icon || '📦'}</div>
+    <div class="product-name">${product.name}</div>
+    <div class="product-price">$${p1.toLocaleString()}</div>
+    <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
+    <div class="product-actions">
+        <div class="quantity-controls">
+            <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
+            <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
+            <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
+        </div>
+        <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
+    </div>`;;
                 grid.appendChild(card);
             });
             container.appendChild(grid);
@@ -816,4 +816,5 @@
 </body>
 
 </html>
+
 
