@@ -677,7 +677,8 @@
         // 1. Carga de datos (Cambiá la URL por la de Render cuando la tengas)
         async function loadProducts() {
             try {
-                const response = await fetch('https://baratelli.onrender.com/api/products');
+                //const response = await fetch('https://baratelli.onrender.com/api/products');
+                const response = await fetch('products.json');
                 if (!response.ok) throw new Error('Error en API');
                 products = await response.json();
                 renderProducts();
@@ -815,3 +816,4 @@
 </body>
 
 </html>
+
