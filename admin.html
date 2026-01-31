@@ -3,159 +3,1132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Baratelli</title>
+    <title>📦 Admin Baratelli - Mayorista</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
         body {
-            font-family: sans-serif;
-            background: #f0f2f5;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
             padding: 20px;
+            color: var(--dark);
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
         }
 
-        h1 {
-            color: #1e40af;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #2563eb;
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-            button:hover {
-                background: #1e40af;
-            }
-
-        .product-list {
-            margin-top: 30px;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-
-        .item {
+            padding: 25px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
         }
 
-        .btn-delete {
-            background: #ef4444;
-            width: auto;
-            padding: 5px 10px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .logo h1 {
+                font-size: 1.8rem;
+                font-weight: 700;
+            }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 0;
+            min-height: 700px;
+        }
+
+        /* Form Section */
+        .form-section {
+            padding: 30px;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .emoji-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .emoji-btn {
+            font-size: 1.5rem;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .emoji-btn:hover {
+                border-color: var(--primary);
+                transform: scale(1.1);
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+            .btn-primary:hover {
+                background: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+            }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--dark);
+        }
+
+            .btn-secondary:hover {
+                background: #e2e8f0;
+            }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 30px;
+            background: var(--light);
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+            .search-box input {
+                padding-left: 45px;
+            }
+
+        .products-list {
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border-left: 5px solid var(--primary);
+        }
+
+            .product-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            color: var(--gray);
+        }
+
+            .action-btn.edit:hover {
+                background: #dbeafe;
+                color: var(--primary);
+            }
+
+            .action-btn.delete:hover {
+                background: #fee2e2;
+                color: var(--danger);
+            }
+
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .detail-label {
+            color: var(--gray);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .stock-indicator {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .stock-high {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .stock-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stock-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* JSON Section */
+        .json-section {
+            padding: 30px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .json-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .json-container {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .instructions {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+            .instructions ol {
+                padding-left: 20px;
+                margin-top: 10px;
+            }
+
+            .instructions li {
+                margin-bottom: 8px;
+            }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>📦 Administrar Productos</h1>
-
-        <div id="formContainer">
-            <div class="form-group"><label>Nombre del Producto</label><input type="text" id="name" placeholder="Ej: Leche Entera 1L"></div>
-            <div class="form-group"><label>Precio Público ($)</label><input type="number" id="price" placeholder="Ej: 1200"></div>
-            <div class="form-group"><label>Stock</label><input type="number" id="stock" placeholder="Ej: 50"></div>
-            <div class="form-group">
-                <label>Categoría</label>
-                <select id="category">
-                    <option value="Lácteos">🥛 Lácteos</option>
-                    <option value="Almacén">📦 Almacén</option>
-                    <option value="Fideos">🍝 Fideos</option>
-                    <option value="Ofertas">🔥 Ofertas</option>
-                </select>
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">📦</div>
+                <div>
+                    <h1>Admin Baratelli</h1>
+                    <p>Sistema de Gestión Mayorista</p>
+                </div>
             </div>
-            <div class="form-group"><label>Ícono (Emoji)</label><input type="text" id="icon" placeholder="Ej: 🥛"></div>
-            <button onclick="saveProduct()">➕ Agregar / Actualizar Producto</button>
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="stat-value" id="totalProducts">0</span>
+                    <span>Productos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="totalStock">0</span>
+                    <span>Stock Total</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="totalValue">$0</span>
+                    <span>Valor Total</span>
+                </div>
+            </div>
         </div>
 
-        <div class="product-list" id="productList">
-            <h3>Lista de Productos Actuales</h3>
-            <div id="itemsContainer">Cargando productos...</div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-plus-circle"></i> Agregar/Editar Producto</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="productName"><i class="fas fa-tag"></i> Nombre del Producto *</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-tag input-icon"></i>
+                            <input type="text" id="productName" placeholder="Ej: Leche Entera 1L" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productPrice"><i class="fas fa-dollar-sign"></i> Precio Público ($) *</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-dollar-sign input-icon"></i>
+                            <input type="number" id="productPrice" placeholder="Ej: 1200.00" step="0.01" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productStock"><i class="fas fa-boxes"></i> Stock Disponible *</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-boxes input-icon"></i>
+                            <input type="number" id="productStock" placeholder="Ej: 50" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productCategory"><i class="fas fa-filter"></i> Categoría *</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-filter input-icon"></i>
+                            <select id="productCategory">
+                                <option value="Almacén">📦 Almacén</option>
+                                <option value="Lácteos">🥛 Lácteos</option>
+                                <option value="Fiambres">🥓 Fiambres</option>
+                                <option value="Fideos">🍝 Fideos</option>
+                                <option value="Bebidas">🥤 Bebidas</option>
+                                <option value="Limpieza">🧼 Limpieza</option>
+                                <option value="Congelados">🧊 Congelados</option>
+                                <option value="Ofertas">🔥 Ofertas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label><i class="fas fa-icons"></i> Ícono (Emoji)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-icons input-icon"></i>
+                            <input type="text" id="productIcon" placeholder="🥛" maxlength="2">
+                        </div>
+                        <div class="emoji-picker">
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🛢️')">🛢️</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🍬')">🍬</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🥛')">🥛</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🍝')">🍝</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🧀')">🧀</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🧉')">🧉</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🥤')">🥤</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🧼')">🧼</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🧊')">🧊</button>
+                            <button type="button" class="emoji-btn" onclick="setEmoji('🔥')">🔥</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="productDescription"><i class="fas fa-align-left"></i> Descripción (Opcional)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-align-left input-icon"></i>
+                            <textarea id="productDescription" placeholder="Descripción detallada del producto..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="saveProductBtn" class="btn btn-primary" onclick="saveProduct()">
+                        <i class="fas fa-save"></i> Guardar Producto
+                    </button>
+                    <button type="button" id="cancelEditBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display: none;">
+                        <i class="fas fa-times"></i> Cancelar Edición
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearForm()">
+                        <i class="fas fa-eraser"></i> Limpiar Formulario
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products List Section -->
+            <div class="products-section">
+                <div class="products-header">
+                    <h2 class="section-title"><i class="fas fa-box-open"></i> Productos Actuales</h2>
+                    <button class="btn btn-success" onclick="loadFromGitHub()">
+                        <i class="fas fa-sync-alt"></i> Cargar desde GitHub
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <div class="input-with-icon">
+                        <i class="fas fa-search input-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar productos...">
+                    </div>
+                </div>
+
+                <div class="products-list" id="productsList">
+                    <!-- Los productos se cargarán aquí -->
+                    <div style="text-align: center; padding: 40px; color: var(--gray);">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>No hay productos cargados.</p>
+                        <button class="btn btn-primary" onclick="loadFromGitHub()" style="margin-top: 15px;">
+                            <i class="fas fa-cloud-download-alt"></i> Cargar desde GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Export Section -->
+        <div class="json-section">
+            <div class="json-header">
+                <h2 class="section-title"><i class="fas fa-code"></i> JSON para GitHub</h2>
+                <button class="btn btn-primary" onclick="copyJSON()">
+                    <i class="fas fa-copy"></i> Copiar JSON
+                </button>
+            </div>
+
+            <div class="json-container" id="jsonOutput">
+                // Los productos aparecerán aquí en formato JSON
+            </div>
+
+            <div class="instructions">
+                <p><strong><i class="fas fa-info-circle"></i> Instrucciones para actualizar GitHub:</strong></p>
+                <ol>
+                    <li>Haz clic en <strong>"Copiar JSON"</strong> para copiar todo el código</li>
+                    <li>Ve a tu repositorio en GitHub: <code>Baratelli/Baratelli</code></li>
+                    <li>Busca el archivo <code>products.json</code> (si no existe, créalo)</li>
+                    <li>Haz clic en el ícono de lápiz (✏️) para editar</li>
+                    <li>Reemplaza TODO el contenido con el JSON copiado</li>
+                    <li>Haz clic en <strong>"Commit changes"</strong></li>
+                    <li>Espera 1-2 minutos y recarga tu sitio web: <code>https://baratelli.github.io/Baratelli/</code></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminación -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirmar Eliminación</h2>
+                <button class="action-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <p>¿Estás seguro de que querés eliminar el producto <strong id="productToDeleteName"></strong>?</p>
+            <p>Esta acción no se puede deshacer.</p>
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button class="btn btn-danger" style="flex: 1;" onclick="confirmDelete()">Sí, Eliminar</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Cancelar</button>
+            </div>
         </div>
     </div>
 
     <script>
-    const API_URL = 'https://baratelli.onrender.com/api/products';
+        // Variables globales
+        let products = [];
+        let editingProductId = null;
+        let deleteProductId = null;
 
-    // Cargar productos al iniciar
-    async function getProducts() {
-        const res = await fetch(API_URL);
-        const products = await res.json();
-        const container = document.getElementById('itemsContainer');
-        container.innerHTML = '';
-        products.forEach(p => {
-            container.innerHTML += `
-                <div class="item">
-                    <div>
-                        <strong>${p.icon} ${p.name}</strong> - $${p.price} (Stock: ${p.stock})
-                    </div>
-                    <button class="btn-delete" onclick="deleteProduct(${p.id})">Eliminar</button>
-                </div>`;
-        });
-    }
-
-    // Guardar o Editar
-    async function saveProduct() {
-        const data = {
-            name: document.getElementById('name').value,
-            price: document.getElementById('price').value,
-            stock: document.getElementById('stock').value,
-            category: document.getElementById('category').value,
-            icon: document.getElementById('icon').value
+        // Emojis comunes para productos
+        const categoryIcons = {
+            'Almacén': '📦',
+            'Lácteos': '🥛',
+            'Fiambres': '🥓',
+            'Fideos': '🍝',
+            'Bebidas': '🥤',
+            'Limpieza': '🧼',
+            'Congelados': '🧊',
+            'Ofertas': '🔥'
         };
 
-        if(!data.name || !data.price) return alert("Nombre y precio son obligatorios");
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            // Intentar cargar productos del almacenamiento local
+            const savedProducts = localStorage.getItem('baratelli_products');
+            if (savedProducts) {
+                try {
+                    products = JSON.parse(savedProducts);
+                    renderProducts();
+                    updateStats();
+                    updateJSON();
+                } catch (e) {
+                    console.error('Error cargando productos locales:', e);
+                }
+            }
 
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            // Configurar búsqueda en tiempo real
+            document.getElementById('searchInput').addEventListener('input', filterProducts);
+
+            // Configurar tecla Enter en formulario
+            document.getElementById('productName').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') saveProduct();
+            });
         });
 
-        alert("¡Producto guardado!");
-        location.reload(); // Recarga para ver los cambios
-    }
+        // Función para cargar productos desde GitHub
+        async function loadFromGitHub() {
+            try {
+                const response = await fetch('products.json?t=' + Date.now());
+                if (!response.ok) throw new Error('No se pudo cargar products.json');
 
-    // Borrar
-    async function deleteProduct(id) {
-        if(!confirm("¿Seguro que querés borrar este producto?")) return;
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        getProducts();
-    }
+                const data = await response.json();
+                products = data;
 
-    getProducts();
+                // Guardar en almacenamiento local
+                localStorage.setItem('baratelli_products', JSON.stringify(products));
+
+                renderProducts();
+                updateStats();
+                updateJSON();
+
+                showMessage('✅ Productos cargados desde GitHub correctamente', 'success');
+            } catch (error) {
+                console.error('Error cargando desde GitHub:', error);
+                showMessage('❌ Error al cargar desde GitHub. Verifica que products.json exista.', 'error');
+
+                // Cargar datos de ejemplo si no hay conexión
+                loadSampleData();
+            }
+        }
+
+        // Cargar datos de ejemplo
+        function loadSampleData() {
+            products = [
+                {
+                    "id": 1,
+                    "name": "Aceite Girasol 1.5L",
+                    "price": "2200.00",
+                    "stock": 50,
+                    "category": "Almacén",
+                    "icon": "🛢️",
+                    "description": ""
+                },
+                {
+                    "id": 2,
+                    "name": "Azúcar Classic 1kg",
+                    "price": "900.00",
+                    "stock": 100,
+                    "category": "Almacén",
+                    "icon": "🍬",
+                    "description": ""
+                },
+                {
+                    "id": 3,
+                    "name": "Leche Entera Larga Vida",
+                    "price": "1100.00",
+                    "stock": 80,
+                    "category": "Lácteos",
+                    "icon": "🥛",
+                    "description": "Leche entera larga vida 1L"
+                }
+            ];
+
+            localStorage.setItem('baratelli_products', JSON.stringify(products));
+            renderProducts();
+            updateStats();
+            updateJSON();
+
+            showMessage('📦 Datos de ejemplo cargados. Agrega tus propios productos.', 'info');
+        }
+
+        // Guardar producto (nuevo o edición)
+        function saveProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = document.getElementById('productPrice').value;
+            const stock = document.getElementById('productStock').value;
+            const category = document.getElementById('productCategory').value;
+            let icon = document.getElementById('productIcon').value.trim();
+            const description = document.getElementById('productDescription').value.trim();
+
+            // Validaciones
+            if (!name || !price || !stock || !category) {
+                showMessage('❌ Por favor completá todos los campos obligatorios', 'error');
+                return;
+            }
+
+            // Si no se ingresa ícono, usar el de la categoría
+            if (!icon && categoryIcons[category]) {
+                icon = categoryIcons[category];
+            }
+
+            // Crear objeto producto
+            const product = {
+                id: editingProductId || Date.now(),
+                name,
+                price: parseFloat(price).toFixed(2),
+                stock: parseInt(stock),
+                category,
+                icon: icon || '📦',
+                description
+            };
+
+            // Agregar o actualizar
+            if (editingProductId) {
+                // Actualizar producto existente
+                const index = products.findIndex(p => p.id === editingProductId);
+                if (index !== -1) {
+                    products[index] = product;
+                    showMessage('✅ Producto actualizado correctamente', 'success');
+                }
+                editingProductId = null;
+                document.getElementById('cancelEditBtn').style.display = 'none';
+                document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Guardar Producto';
+            } else {
+                // Agregar nuevo producto
+                products.push(product);
+                showMessage('✅ Producto agregado correctamente', 'success');
+            }
+
+            // Guardar en almacenamiento local
+            localStorage.setItem('baratelli_products', JSON.stringify(products));
+
+            // Actualizar la vista
+            clearForm();
+            renderProducts();
+            updateStats();
+            updateJSON();
+        }
+
+        // Editar producto
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            // Llenar formulario con datos del producto
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productIcon').value = product.icon;
+            document.getElementById('productDescription').value = product.description || '';
+
+            // Cambiar modo a edición
+            editingProductId = id;
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-edit"></i> Actualizar Producto';
+
+            // Desplazar hacia el formulario
+            document.getElementById('productName').focus();
+
+            showMessage('✏️ Editando producto: ' + product.name, 'info');
+        }
+
+        // Cancelar edición
+        function cancelEdit() {
+            editingProductId = null;
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Guardar Producto';
+            clearForm();
+            showMessage('Edición cancelada', 'info');
+        }
+
+        // Eliminar producto
+        function deleteProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            deleteProductId = id;
+            document.getElementById('productToDeleteName').textContent = product.name;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        // Confirmar eliminación
+        function confirmDelete() {
+            if (deleteProductId) {
+                products = products.filter(p => p.id !== deleteProductId);
+                localStorage.setItem('baratelli_products', JSON.stringify(products));
+
+                renderProducts();
+                updateStats();
+                updateJSON();
+
+                showMessage('🗑️ Producto eliminado correctamente', 'success');
+                closeModal();
+            }
+        }
+
+        // Cerrar modal
+        function closeModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteProductId = null;
+        }
+
+        // Limpiar formulario
+        function clearForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productCategory').value = 'Almacén';
+            document.getElementById('productIcon').value = '';
+            document.getElementById('productDescription').value = '';
+
+            editingProductId = null;
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Guardar Producto';
+
+            document.getElementById('productName').focus();
+        }
+
+        // Establecer emoji
+        function setEmoji(emoji) {
+            document.getElementById('productIcon').value = emoji;
+        }
+
+        // Filtrar productos
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts(searchTerm);
+        }
+
+        // Renderizar lista de productos
+        function renderProducts(searchTerm = '') {
+            const container = document.getElementById('productsList');
+            if (!container) return;
+
+            // Filtrar productos si hay término de búsqueda
+            let filteredProducts = products;
+            if (searchTerm) {
+                filteredProducts = products.filter(p =>
+                    p.name.toLowerCase().includes(searchTerm) ||
+                    p.category.toLowerCase().includes(searchTerm) ||
+                    p.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Si no hay productos
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                                <p>${searchTerm ? 'No se encontraron productos que coincidan con la búsqueda' : 'No hay productos cargados'}</p>
+                                ${!searchTerm ? `
+                                    <button class="btn btn-primary" onclick="loadFromGitHub()" style="margin-top: 15px;">
+                                        <i class="fas fa-cloud-download-alt"></i> Cargar desde GitHub
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
+                return;
+            }
+
+            // Ordenar por ID (más recientes primero)
+            filteredProducts.sort((a, b) => b.id - a.id);
+
+            // Generar HTML de productos
+            let html = '';
+            filteredProducts.forEach(product => {
+                // Determinar estado del stock
+                let stockClass = 'stock-high';
+                let stockText = 'Alto';
+                if (product.stock < 10) {
+                    stockClass = 'stock-low';
+                    stockText = 'Bajo';
+                } else if (product.stock < 30) {
+                    stockClass = 'stock-medium';
+                    stockText = 'Medio';
+                }
+
+                html += `
+                            <div class="product-card">
+                                <div class="product-header">
+                                    <div class="product-title">
+                                        <span>${product.icon}</span>
+                                        ${product.name}
+                                    </div>
+                                    <div class="product-actions">
+                                        <button class="action-btn edit" onclick="editProduct(${product.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteProduct(${product.id})" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="product-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Precio:</span>
+                                        <span class="detail-value">$${product.price}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Stock:</span>
+                                        <span class="detail-value">
+                                            <span class="stock-indicator ${stockClass}">${product.stock} (${stockText})</span>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Categoría:</span>
+                                        <span class="detail-value">${product.category}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">ID:</span>
+                                        <span class="detail-value">#${product.id}</span>
+                                    </div>
+                                </div>
+
+                                ${product.description ? `
+                                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
+                                        <small style="color: var(--gray);">${product.description}</small>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const totalProducts = products.length;
+            const totalStock = products.reduce((sum, p) => sum + (parseInt(p.stock) || 0), 0);
+            const totalValue = products.reduce((sum, p) => sum + (parseFloat(p.price) || 0) * (parseInt(p.stock) || 0), 0);
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('totalStock').textContent = totalStock;
+            document.getElementById('totalValue').textContent = '$' + totalValue.toLocaleString();
+        }
+
+        // Actualizar JSON de salida
+        function updateJSON() {
+            const jsonContainer = document.getElementById('jsonOutput');
+            if (!jsonContainer) return;
+
+            // Formatear JSON para mostrar
+            const jsonString = JSON.stringify(products, null, 2);
+            jsonContainer.textContent = jsonString;
+
+            // Resaltar sintaxis básica (opcional)
+            jsonContainer.innerHTML = jsonString
+                .replace(/("[\w]+":)/g, '<span style="color: #7dd3fc;">$1</span>')
+                .replace(/("[^"]*")/g, '<span style="color: #bbf7d0;">$1</span>')
+                .replace(/(\d+)/g, '<span style="color: #fbbf24;">$1</span>');
+        }
+
+        // Copiar JSON al portapapeles
+        function copyJSON() {
+            const jsonString = JSON.stringify(products, null, 2);
+
+            navigator.clipboard.writeText(jsonString)
+                .then(() => {
+                    showMessage('✅ JSON copiado al portapapeles. Ahora pégalo en GitHub.', 'success');
+                })
+                .catch(err => {
+                    console.error('Error copiando:', err);
+                    showMessage('❌ Error al copiar. Intenta manualmente.', 'error');
+                });
+        }
+
+        // Mostrar mensaje temporal
+        function showMessage(text, type = 'info') {
+            // Eliminar mensaje anterior si existe
+            const existingMsg = document.getElementById('tempMessage');
+            if (existingMsg) existingMsg.remove();
+
+            // Crear nuevo mensaje
+            const msg = document.createElement('div');
+            msg.id = 'tempMessage';
+            msg.textContent = text;
+            msg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 15px 20px;
+                        border-radius: 10px;
+                        color: white;
+                        font-weight: 600;
+                        z-index: 10000;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                        animation: slideIn 0.3s ease;
+                    `;
+
+            // Color según tipo
+            if (type === 'success') {
+                msg.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            } else if (type === 'error') {
+                msg.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+            } else if (type === 'info') {
+                msg.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+            }
+
+            document.body.appendChild(msg);
+
+            // Eliminar después de 4 segundos
+            setTimeout(() => {
+                if (msg.parentNode) {
+                    msg.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        if (msg.parentNode) msg.remove();
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // Estilos de animación para mensajes
+        const style = document.createElement('style');
+        style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
