@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Aceite Girasol 1.5L",
+    "price": "2200.00",
+    "stock": 50,
+    "category": "Almacén",
+    "icon": "🛢️"
+  },
+  {
+    "id": 2,
+    "name": "Azúcar Classic 1kg",
+    "price": "900.00", 
+    "stock": 100,
+    "category": "Almacén",
+    "icon": "🍬"
+  },
+  {
+    "id": 3,
+    "name": "Leche Entera Larga Vida",
+    "price": "1100.00",
+    "stock": 80,
+    "category": "Lácteos",
+    "icon": "🥛"
+  }
+]
