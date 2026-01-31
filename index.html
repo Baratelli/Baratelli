@@ -709,7 +709,31 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-    <div class="product-icon">${product.icon || '📦'}</div>
+    <!-- CONTENEDOR DE IMAGEN -->
+    <div style="
+        height: 200px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        margin-bottom: 15px;
+        background: #f8fafc;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    ">
+        ${product.image ? 
+            `<img src="product-images/${product.image}" 
+                  alt="${product.name}" 
+                  style="
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                    padding: 10px;
+                  ">` : 
+            `<div style="font-size: 4em; opacity: 0.5;">${product.icon || '📦'}</div>`
+        }
+    </div>
+    
     <div class="product-name">${product.name}</div>
     <div class="product-price">$${p1.toLocaleString()}</div>
     <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
@@ -720,7 +744,7 @@
             <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
         </div>
         <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
-    </div>`;;
+    </div>`;
                 grid.appendChild(card);
             });
             container.appendChild(grid);
@@ -816,5 +840,6 @@
 </body>
 
 </html>
+
 
 
