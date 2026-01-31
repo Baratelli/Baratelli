@@ -16,5 +16,14 @@
     "category": "Bebidas",
     "image": "villamanaos-6lts.webp",
     "description": "Agua mineral villamanaos"
+  },
+  {
+    "id": 1769903129729,
+    "name": "Fideo Marolio Mostachol Rayado",
+    "price": "700.00",
+    "stock": 100,
+    "category": "Almacén",
+    "image": "fideo-marolio-m-rayado.jpg",
+    "description": "Fideos Marolio"
   }
 ]
