@@ -669,46 +669,46 @@
         </div>
     </div>
 
-    <script>
-        let products = [];
-        let cart = [];
-        let currentCategory = 'Todos';
+   <script>
+    let products = [];
+    let cart = [];
+    let currentCategory = 'Todos';
 
-        // 1. Carga de datos (Cambiá la URL por la de Render cuando la tengas)
-        async function loadProducts() {
-            try {
-                //const response = await fetch('https://baratelli.onrender.com/api/products');
-                const response = await fetch('products.json');
-                if (!response.ok) throw new Error('Error en API');
-                products = await response.json();
-                renderProducts();
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('productsContainer').innerHTML =
-                    '<p style="text-align:center; color:red; padding:20px;">⚠️ Error al conectar con el servidor.</p>';
-            }
+    // 1. Carga de datos (Cambiá la URL por la de Render cuando la tengas)
+    async function loadProducts() {
+        try {
+            //const response = await fetch('https://baratelli.onrender.com/api/products');
+            const response = await fetch('products.json');
+            if (!response.ok) throw new Error('Error en API');
+            products = await response.json();
+            renderProducts();
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('productsContainer').innerHTML =
+                '<p style="text-align:center; color:red; padding:20px;">⚠️ Error al conectar con el servidor.</p>';
         }
+    }
 
-        // FUNCIÓN MAESTRA DE PRECIOS: Resta 100 y redondea a la centena superior
-        function getMayoristaPrice(priceNormal) {
-            const p1 = parseFloat(priceNormal) || 0;
-            return Math.ceil((p1 - 100) / 100) * 100;
-        }
+    // FUNCIÓN MAESTRA DE PRECIOS: Resta 100 y redondea a la centena superior
+    function getMayoristaPrice(priceNormal) {
+        const p1 = parseFloat(priceNormal) || 0;
+        return Math.ceil((p1 - 100) / 100) * 100;
+    }
 
-        function renderProducts() {
-            const container = document.getElementById('productsContainer');
-            container.innerHTML = '';
-            const filtered = currentCategory === 'Todos' ? products : products.filter(p => p.category === currentCategory);
-            const grid = document.createElement('div');
-            grid.className = 'products-grid';
+    function renderProducts() {
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = '';
+        const filtered = currentCategory === 'Todos' ? products : products.filter(p => p.category === currentCategory);
+        const grid = document.createElement('div');
+        grid.className = 'products-grid';
 
-            filtered.forEach(product => {
-                const p1 = parseFloat(product.price) || 0;
-                const p3 = getMayoristaPrice(p1);
+        filtered.forEach(product => {
+            const p1 = parseFloat(product.price) || 0;
+            const p3 = getMayoristaPrice(p1);
 
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
     <!-- CONTENEDOR DE IMAGEN -->
     <div style="
         height: 200px; 
@@ -745,123 +745,187 @@
         </div>
         <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
     </div>`;
-                grid.appendChild(card);
-            });
-            container.appendChild(grid);
-        }
-
-        function changeQuantity(productId, delta) {
-            const input = document.getElementById(`qty-${productId}`);
-            const product = products.find(p => p.id === productId);
-            if (input && product) {
-                let newValue = parseInt(input.value) + delta;
-                if (newValue >= 1 && newValue <= product.stock) input.value = newValue;
-            }
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const qty = parseInt(document.getElementById(`qty-${productId}`).value);
-            const existing = cart.find(item => item.id === productId);
-            if (existing) { existing.quantity += qty; } else { cart.push({ ...product, quantity: qty }); }
-            updateCartBadge();
-            const btn = event.currentTarget;
-            btn.innerHTML = '✅';
-            setTimeout(() => btn.innerHTML = '🛒', 800);
-        }
-
-        function updateCartBadge() { document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.quantity, 0); }
-
-        function toggleCart() {
-            const modal = document.getElementById('cartModal');
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-            if (modal.style.display === 'block') renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cartItems');
-            if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px;">Carrito vacío</p>';
-                document.getElementById('cartSummary').style.display = 'none';
-                return;
-            }
-            container.innerHTML = cart.map(item => {
-                const p1 = parseFloat(item.price);
-                const p3 = getMayoristaPrice(p1);
-                const finalPrice = item.quantity >= 3 ? p3 : p1;
-                return `
-                        <div class="cart-item">
-                            <div><strong>${item.name}</strong><br><small>$${finalPrice.toLocaleString()} x ${item.quantity}</small></div>
-                            <div>$${(finalPrice * item.quantity).toLocaleString()}</div>
-                        </div>`;
-            }).join('');
-            updateCartSummary();
-        }
-
-        function updateCartSummary() {
-            let subtotal = 0, total = 0;
-            cart.forEach(item => {
-                const p1 = parseFloat(item.price);
-                const p3 = getMayoristaPrice(p1);
-                subtotal += p1 * item.quantity;
-                total += (item.quantity >= 3 ? p3 : p1) * item.quantity;
-            });
-            document.getElementById('cartSummary').style.display = 'block';
-            document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
-            document.getElementById('total').textContent = `$${total.toLocaleString()}`;
-            const savings = subtotal - total;
-            document.getElementById('savingsRow').style.display = savings > 0 ? 'flex' : 'none';
-            document.getElementById('savings').textContent = `$${savings.toLocaleString()}`;
-        }
-
-        function checkout() {
-            const name = document.getElementById('customerName').value;
-            const address = document.getElementById('customerAddress').value;
-            if (!name || !address) return alert("Completá tus datos");
-            let message = `🛒 *PEDIDO WEB*\nCliente: ${name}\nDir: ${address}\n\n`;
-            cart.forEach(item => {
-                const p1 = parseFloat(item.price);
-                const up = item.quantity >= 3 ? getMayoristaPrice(p1) : p1;
-                message += `• ${item.name} x${item.quantity} = $${(up * item.quantity).toLocaleString()}\n`;
-            });
-            message += `\n*TOTAL: ${document.getElementById('total').textContent}*`;
-            window.open(`https://wa.me/5491150625878?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            if (event) event.target.classList.add('active');
-            renderProducts();
-        }
-
-        function searchProducts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const container = document.getElementById('productsContainer');
-    
-    if (!searchTerm.trim()) {
-        renderProducts();
-        return;
+            grid.appendChild(card);
+        });
+        container.appendChild(grid);
     }
-    
-    const filtered = products.filter(p => 
-        p.name.toLowerCase().includes(searchTerm) || 
-        p.description?.toLowerCase().includes(searchTerm)
-    );
-    
-    container.innerHTML = '';
-    const grid = document.createElement('div');
-    grid.className = 'products-grid';
-    
-    // Copia el mismo código de renderProducts() pero con "filtered" en lugar de products
-    // ...
-}
 
-        loadProducts();
-    </script>
+    // FUNCIÓN DE BÚSQUEDA COMPLETA
+    function searchProducts() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const container = document.getElementById('productsContainer');
+        
+        // Si no hay búsqueda, muestra todos los productos filtrados por categoría
+        if (!searchTerm.trim()) {
+            renderProducts();
+            return;
+        }
+        
+        // Filtra productos por término de búsqueda
+        const filtered = products.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) || 
+            (p.description && p.description.toLowerCase().includes(searchTerm))
+        );
+        
+        // Limpia el contenedor
+        container.innerHTML = '';
+        
+        // Si no hay resultados
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">No se encontraron productos</p>';
+            return;
+        }
+        
+        // Crea la cuadrícula de productos (igual que en renderProducts pero con la lista filtrada)
+        const grid = document.createElement('div');
+        grid.className = 'products-grid';
+        
+        filtered.forEach(product => {
+            const p1 = parseFloat(product.price) || 0;
+            const p3 = getMayoristaPrice(p1);
+            
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <!-- CONTENEDOR DE IMAGEN -->
+                <div style="
+                    height: 200px; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center;
+                    margin-bottom: 15px;
+                    background: #f8fafc;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    border: 1px solid #e2e8f0;
+                ">
+                    ${product.image ? 
+                        `<img src="product-images/${product.image}" 
+                              alt="${product.name}" 
+                              style="
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: contain;
+                                padding: 10px;
+                              ">` : 
+                        `<div style="font-size: 4em; opacity: 0.5;">${product.icon || '📦'}</div>`
+                    }
+                </div>
+                
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">$${p1.toLocaleString()}</div>
+                <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
+                <div class="product-actions">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
+                        <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
+                        <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
+                </div>`;
+            grid.appendChild(card);
+        });
+        
+        container.appendChild(grid);
+    }
+
+    function changeQuantity(productId, delta) {
+        const input = document.getElementById(`qty-${productId}`);
+        const product = products.find(p => p.id === productId);
+        if (input && product) {
+            let newValue = parseInt(input.value) + delta;
+            if (newValue >= 1 && newValue <= product.stock) input.value = newValue;
+        }
+    }
+
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        const qty = parseInt(document.getElementById(`qty-${productId}`).value);
+        const existing = cart.find(item => item.id === productId);
+        if (existing) { 
+            existing.quantity += qty; 
+        } else { 
+            cart.push({ ...product, quantity: qty }); 
+        }
+        updateCartBadge();
+        const btn = event.currentTarget;
+        btn.innerHTML = '✅';
+        setTimeout(() => btn.innerHTML = '🛒', 800);
+    }
+
+    function updateCartBadge() { 
+        document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.quantity, 0); 
+    }
+
+    function toggleCart() {
+        const modal = document.getElementById('cartModal');
+        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        if (modal.style.display === 'block') renderCart();
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cartItems');
+        if (cart.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:20px;">Carrito vacío</p>';
+            document.getElementById('cartSummary').style.display = 'none';
+            return;
+        }
+        container.innerHTML = cart.map(item => {
+            const p1 = parseFloat(item.price);
+            const p3 = getMayoristaPrice(p1);
+            const finalPrice = item.quantity >= 3 ? p3 : p1;
+            return `
+                    <div class="cart-item">
+                        <div><strong>${item.name}</strong><br><small>$${finalPrice.toLocaleString()} x ${item.quantity}</small></div>
+                        <div>$${(finalPrice * item.quantity).toLocaleString()}</div>
+                    </div>`;
+        }).join('');
+        updateCartSummary();
+    }
+
+    function updateCartSummary() {
+        let subtotal = 0, total = 0;
+        cart.forEach(item => {
+            const p1 = parseFloat(item.price);
+            const p3 = getMayoristaPrice(p1);
+            subtotal += p1 * item.quantity;
+            total += (item.quantity >= 3 ? p3 : p1) * item.quantity;
+        });
+        document.getElementById('cartSummary').style.display = 'block';
+        document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+        document.getElementById('total').textContent = `$${total.toLocaleString()}`;
+        const savings = subtotal - total;
+        document.getElementById('savingsRow').style.display = savings > 0 ? 'flex' : 'none';
+        document.getElementById('savings').textContent = `$${savings.toLocaleString()}`;
+    }
+
+    function checkout() {
+        const name = document.getElementById('customerName').value;
+        const address = document.getElementById('customerAddress').value;
+        if (!name || !address) return alert("Completá tus datos");
+        let message = `🛒 *PEDIDO WEB*\nCliente: ${name}\nDir: ${address}\n\n`;
+        cart.forEach(item => {
+            const p1 = parseFloat(item.price);
+            const up = item.quantity >= 3 ? getMayoristaPrice(p1) : p1;
+            message += `• ${item.name} x${item.quantity} = $${(up * item.quantity).toLocaleString()}\n`;
+        });
+        message += `\n*TOTAL: ${document.getElementById('total').textContent}*`;
+        window.open(`https://wa.me/5491150625878?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function filterCategory(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        if (event) event.target.classList.add('active');
+        renderProducts();
+    }
+
+    loadProducts();
+</script>
 </body>
 
 </html>
+
 
 
 
