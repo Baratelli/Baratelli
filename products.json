@@ -7,5 +7,14 @@
     "category": "Almacén",
     "image": "aceite-mezcla-siglo-del-oro.webp",
     "description": "Aceite de girasol refinado 1.5 litros"
+  },
+  {
+    "id": 1769901906991,
+    "name": "Agua Mineral Villamanaos",
+    "price": "2000.00",
+    "stock": 10,
+    "category": "Bebidas",
+    "image": "villamanaos-6lts.webp",
+    "description": "Agua mineral villamanaos"
   }
 ]
