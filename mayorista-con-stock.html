@@ -675,7 +675,7 @@
         let cart = [];
         let currentCategory = 'Todos';
 
-        // 1. Carga de datos
+        // 1. Carga de datos (Cambiá la URL por la de Render cuando la tengas)
         async function loadProducts() {
             try {
                 const response = await fetch('http://localhost:3000/api/products');
@@ -689,27 +689,22 @@
             }
         }
 
-        // 2. Función maestra de precios (Centralizamos el cálculo aquí para evitar errores)
-        function calculatePrices(priceNormal) {
+        // FUNCIÓN MAESTRA DE PRECIOS: Resta 100 y redondea a la centena superior
+        function getMayoristaPrice(priceNormal) {
             const p1 = parseFloat(priceNormal) || 0;
-            // Regla: Restamos 100 y redondeamos hacia arriba a la centena (billete de 100)
-            const p3 = Math.ceil((p1 - 100) / 100) * 100;
-            return { p1, p3 };
+            return Math.ceil((p1 - 100) / 100) * 100;
         }
 
-        // 3. Renderizado de productos
         function renderProducts() {
             const container = document.getElementById('productsContainer');
             container.innerHTML = '';
-
-            const filtered = currentCategory === 'Todos' ?
-                products : products.filter(p => p.category === currentCategory);
-
+            const filtered = currentCategory === 'Todos' ? products : products.filter(p => p.category === currentCategory);
             const grid = document.createElement('div');
             grid.className = 'products-grid';
 
             filtered.forEach(product => {
-                const { p1, p3 } = calculatePrices(product.price);
+                const p1 = parseFloat(product.price) || 0;
+                const p3 = getMayoristaPrice(p1);
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -717,9 +712,7 @@
                     <div class="product-icon">${product.icon || '📦'}</div>
                     <div class="product-name">${product.name}</div>
                     <div class="product-price">$${p1.toLocaleString()}</div>
-                    <div class="product-price-from3" style="color: #059669; font-weight: bold;">
-                        ✨ 3+ unidades: $${p3.toLocaleString()}
-                    </div>
+                    <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
                     <div class="product-actions">
                         <div class="quantity-controls">
                             <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
@@ -727,14 +720,12 @@
                             <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
                         </div>
                         <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
             container.appendChild(grid);
         }
 
-        // 4. Lógica del Carrito
         function changeQuantity(productId, delta) {
             const input = document.getElementById(`qty-${productId}`);
             const product = products.find(p => p.id === productId);
@@ -748,21 +739,14 @@
             const product = products.find(p => p.id === productId);
             const qty = parseInt(document.getElementById(`qty-${productId}`).value);
             const existing = cart.find(item => item.id === productId);
-
-            if (existing) {
-                existing.quantity += qty;
-            } else {
-                cart.push({ ...product, quantity: qty });
-            }
+            if (existing) { existing.quantity += qty; } else { cart.push({ ...product, quantity: qty }); }
             updateCartBadge();
             const btn = event.currentTarget;
             btn.innerHTML = '✅';
             setTimeout(() => btn.innerHTML = '🛒', 800);
         }
 
-        function updateCartBadge() {
-            document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.quantity, 0);
-        }
+        function updateCartBadge() { document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.quantity, 0); }
 
         function toggleCart() {
             const modal = document.getElementById('cartModal');
@@ -777,59 +761,43 @@
                 document.getElementById('cartSummary').style.display = 'none';
                 return;
             }
-
             container.innerHTML = cart.map(item => {
-                const { p1, p3 } = calculatePrices(item.price);
+                const p1 = parseFloat(item.price);
+                const p3 = getMayoristaPrice(p1);
                 const finalPrice = item.quantity >= 3 ? p3 : p1;
                 return `
                     <div class="cart-item">
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            <small>$${finalPrice.toLocaleString()} x ${item.quantity}</small>
-                        </div>
-                        <div class="cart-item-total">$${(finalPrice * item.quantity).toLocaleString()}</div>
-                        <button class="remove-item" onclick="removeFromCart(${item.id})">🗑️</button>
-                    </div>
-                `;
+                        <div><strong>${item.name}</strong><br><small>$${finalPrice.toLocaleString()} x ${item.quantity}</small></div>
+                        <div>$${(finalPrice * item.quantity).toLocaleString()}</div>
+                    </div>`;
             }).join('');
             updateCartSummary();
         }
 
         function updateCartSummary() {
-            let subtotal = 0;
-            let total = 0;
-
+            let subtotal = 0, total = 0;
             cart.forEach(item => {
-                const { p1, p3 } = calculatePrices(item.price);
+                const p1 = parseFloat(item.price);
+                const p3 = getMayoristaPrice(p1);
                 subtotal += p1 * item.quantity;
-                const finalPrice = item.quantity >= 3 ? p3 : p1;
-                total += finalPrice * item.quantity;
+                total += (item.quantity >= 3 ? p3 : p1) * item.quantity;
             });
-
             document.getElementById('cartSummary').style.display = 'block';
             document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
             document.getElementById('total').textContent = `$${total.toLocaleString()}`;
-
             const savings = subtotal - total;
             document.getElementById('savingsRow').style.display = savings > 0 ? 'flex' : 'none';
             document.getElementById('savings').textContent = `$${savings.toLocaleString()}`;
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(i => i.id !== id);
-            renderCart();
-            updateCartBadge();
         }
 
         function checkout() {
             const name = document.getElementById('customerName').value;
             const address = document.getElementById('customerAddress').value;
             if (!name || !address) return alert("Completá tus datos");
-
             let message = `🛒 *PEDIDO WEB*\nCliente: ${name}\nDir: ${address}\n\n`;
             cart.forEach(item => {
-                const { p1, p3 } = calculatePrices(item.price);
-                const up = item.quantity >= 3 ? p3 : p1;
+                const p1 = parseFloat(item.price);
+                const up = item.quantity >= 3 ? getMayoristaPrice(p1) : p1;
                 message += `• ${item.name} x${item.quantity} = $${(up * item.quantity).toLocaleString()}\n`;
             });
             message += `\n*TOTAL: ${document.getElementById('total').textContent}*`;
@@ -838,6 +806,8 @@
 
         function filterCategory(cat) {
             currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            if (event) event.target.classList.add('active');
             renderProducts();
         }
 
