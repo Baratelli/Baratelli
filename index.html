@@ -835,11 +835,34 @@
             renderProducts();
         }
 
+        function searchProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const container = document.getElementById('productsContainer');
+    
+    if (!searchTerm.trim()) {
+        renderProducts();
+        return;
+    }
+    
+    const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(searchTerm) || 
+        p.description?.toLowerCase().includes(searchTerm)
+    );
+    
+    container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'products-grid';
+    
+    // Copia el mismo código de renderProducts() pero con "filtered" en lugar de products
+    // ...
+}
+
         loadProducts();
     </script>
 </body>
 
 </html>
+
 
 
 
