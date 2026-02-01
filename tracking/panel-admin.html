@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Repartos - Baratelli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .pedido-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pedido-info h3 {
+            margin: 0 0 10px 0;
+            color: #06FFA5;
+        }
+        .btn-iniciar {
+            padding: 10px 20px;
+            background: #06FFA5;
+            color: #0A0E27;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .btn-iniciar:hover {
+            background: #05dd8e;
+        }
+        .estado {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .estado.pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .estado.activo {
+            background: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚚 Panel de Repartos - Baratelli</h1>
+    <div id="pedidos-lista">
+        <p>Cargando pedidos...</p>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+        
+        // TU CONFIGURACIÓN DE FIREBASE (la misma de los otros archivos)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY_AQUI",
+            authDomain: "TU_PROJECT.firebaseapp.com",
+            databaseURL: "https://TU_PROJECT-default-rtdb.firebaseio.com",
+            projectId: "TU_PROJECT",
+            storageBucket: "TU_PROJECT.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:xxxxx"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Escuchar todos los pedidos
+        const deliveriesRef = ref(database, 'deliveries');
+        onValue(deliveriesRef, (snapshot) => {
+            const deliveries = snapshot.val();
+            const lista = document.getElementById('pedidos-lista');
+            
+            if (!deliveries) {
+                lista.innerHTML = '<p>No hay repartos activos.</p>';
+                return;
+            }
+            
+            lista.innerHTML = '';
+            
+            for (let id in deliveries) {
+                const delivery = deliveries[id];
+                const fechaActualizacion = delivery.timestamp ? 
+                    new Date(delivery.timestamp).toLocaleString('es-AR') : 
+                    'Desconocida';
+                
+                lista.innerHTML += `
+                    <div class="pedido-card">
+                        <div class="pedido-info">
+                            <h3>${id}</h3>
+                            <p>
+                                <span class="estado ${delivery.active ? 'activo' : 'pendiente'}">
+                                    ${delivery.active ? '✓ EN REPARTO' : '⏸ DETENIDO'}
+                                </span>
+                            </p>
+                            <p><small>Última actualización: ${fechaActualizacion}</small></p>
+                            <p><small>Precisión: ±${Math.round(delivery.accuracy || 0)}m</small></p>
+                        </div>
+                        <div>
+                            <a href="repartidor.html?id=${id}" class="btn-iniciar">
+                                ${delivery.active ? '📱 Continuar' : '▶️ Iniciar'}
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
