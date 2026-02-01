@@ -819,13 +819,24 @@ function renderFilteredProducts(filteredProducts) {
 }
 
     function changeQuantity(productId, delta) {
-        const input = document.getElementById(`qty-${productId}`);
-        const product = products.find(p => p.id === productId);
-        if (input && product) {
-            let newValue = parseInt(input.value) + delta;
-            if (newValue >= 1 && newValue <= product.stock) input.value = newValue;
-        }
+    const input = document.getElementById(`qty-${productId}`);
+    const product = products.find(p => p.id === productId);
+    
+    if (!input || !product) return;
+    
+    let newValue = parseInt(input.value) + delta;
+    
+    // Validar límites
+    if (newValue < 1) newValue = 1;
+    if (newValue > product.stock) newValue = product.stock;
+    
+    input.value = newValue;
+    
+    // Mostrar advertencia si stock es bajo
+    if (newValue > product.stock * 0.8) {
+        showStockWarning(productId, product.stock);
     }
+}
 
     function addToCart(productId) {
         const product = products.find(p => p.id === productId);
@@ -914,6 +925,7 @@ function renderFilteredProducts(filteredProducts) {
 </body>
 
 </html>
+
 
 
 
