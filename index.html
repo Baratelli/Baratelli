@@ -771,6 +771,34 @@
     // Muestra resultados
     renderFilteredProducts(filtered);
 }
+       function updateStockDisplay(productId, totalStock) {
+    const productInCart = cart.find(item => item.id === productId);
+    const inCart = productInCart ? productInCart.quantity : 0;
+    const available = totalStock - inCart;
+    
+    // Actualizar el máximo en el input
+    const input = document.getElementById(`qty-${productId}`);
+    if (input) {
+        input.max = available;
+        
+        // Si el valor actual es mayor que el disponible, ajustarlo
+        if (parseInt(input.value) > available) {
+            input.value = available;
+        }
+        
+        // Cambiar color si stock es bajo
+        if (available < 5) {
+            input.style.borderColor = '#ef4444';
+            input.style.background = '#fef2f2';
+        } else if (available < 10) {
+            input.style.borderColor = '#f59e0b';
+            input.style.background = '#fffbeb';
+        } else {
+            input.style.borderColor = '#e5e7eb';
+            input.style.background = 'white';
+        }
+    }
+}
 
 function renderFilteredProducts(filteredProducts) {
     const container = document.getElementById('productsContainer');
@@ -956,6 +984,7 @@ function renderFilteredProducts(filteredProducts) {
 </body>
 
 </html>
+
 
 
 
