@@ -753,82 +753,70 @@
 
     // FUNCIÓN DE BÚSQUEDA COMPLETA
     function searchProducts() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const container = document.getElementById('productsContainer');
-        
-        // Si no hay búsqueda, muestra todos los productos filtrados por categoría
-        if (!searchTerm.trim()) {
-            renderProducts();
-            return;
-        }
-        
-        // Filtra productos por término de búsqueda
-        const filtered = products.filter(p => 
-            p.name.toLowerCase().includes(searchTerm) || 
-            (p.description && p.description.toLowerCase().includes(searchTerm))
-        );
-        
-        // Limpia el contenedor
-        container.innerHTML = '';
-        
-        // Si no hay resultados
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">No se encontraron productos</p>';
-            return;
-        }
-        
-        // Crea la cuadrícula de productos (igual que en renderProducts pero con la lista filtrada)
-        const grid = document.createElement('div');
-        grid.className = 'products-grid';
-        
-        filtered.forEach(product => {
-            const p1 = parseFloat(product.price) || 0;
-            const p3 = getMayoristaPrice(p1);
-            
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <!-- CONTENEDOR DE IMAGEN -->
-                <div style="
-                    height: 200px; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center;
-                    margin-bottom: 15px;
-                    background: #f8fafc;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    border: 1px solid #e2e8f0;
-                ">
-                    ${product.image ? 
-                        `<img src="product-images/${product.image}"  
-                              alt="${product.name}" 
-                              style="
-                                max-width: 100%;
-                                max-height: 100%;
-                                object-fit: contain;
-                                padding: 10px;
-                              ">` : 
-                        `<div style="font-size: 4em; opacity: 0.5;">${product.icon || '📦'}</div>`
-                    }
-                </div>
-                
-                <div class="product-name">${product.name}</div>
-                <div class="product-price">$${p1.toLocaleString()}</div>
-                <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
-                <div class="product-actions">
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
-                        <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
-                        <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
-                </div>`;
-            grid.appendChild(card);
-        });
-        
-        container.appendChild(grid);
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    // Si no hay búsqueda, muestra todos los productos de la categoría actual
+    if (!searchTerm.trim()) {
+        renderProducts();
+        return;
     }
+    
+    // Filtra productos
+    const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(searchTerm) || 
+        (p.description && p.description.toLowerCase().includes(searchTerm)) ||
+        p.category.toLowerCase().includes(searchTerm)
+    );
+    
+    // Muestra resultados
+    renderFilteredProducts(filtered);
+}
+
+function renderFilteredProducts(filteredProducts) {
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
+    
+    if (filteredProducts.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:40px; color:#666; grid-column: 1 / -1;">No se encontraron productos</p>';
+        return;
+    }
+    
+    const grid = document.createElement('div');
+    grid.className = 'products-grid';
+    
+    filteredProducts.forEach(product => {
+        const p1 = parseFloat(product.price) || 0;
+        const p3 = getMayoristaPrice(p1);
+        
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <!-- CONTENEDOR DE IMAGEN -->
+            <div style="...">
+                ${product.image ? 
+                    `<img src="product-images/${product.image}" 
+                          alt="${product.name}" 
+                          style="...">` : 
+                    `<div style="font-size: 4em; opacity: 0.5;">${product.icon || '📦'}</div>`
+                }
+            </div>
+            
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">$${p1.toLocaleString()}</div>
+            <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
+            <div class="product-actions">
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
+                    <input type="number" class="quantity-input" id="qty-${product.id}" value="1" min="1" max="${product.stock}">
+                    <button class="quantity-btn" onclick="changeQuantity(${product.id}, 1)">+</button>
+                </div>
+                <button class="add-to-cart" onclick="addToCart(${product.id})">🛒</button>
+            </div>`;
+        grid.appendChild(card);
+    });
+    
+    container.appendChild(grid);
+}
 
     function changeQuantity(productId, delta) {
         const input = document.getElementById(`qty-${productId}`);
@@ -926,6 +914,7 @@
 </body>
 
 </html>
+
 
 
 
