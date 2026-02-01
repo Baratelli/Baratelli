@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -306,6 +306,28 @@
             margin-top: 20px;
         }
 
+        /* Estilo para el campo del token */
+        #githubToken {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        /* Indicador de token válido */
+        .token-valid {
+            border-color: #10b981 !important;
+            background: #f0fdf4 !important;
+        }
+
+        /* Animación de carga */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .form-section {
@@ -438,12 +460,29 @@
                         </small>
                     </div>
 
+                    <!-- CAMPO PARA TOKEN DE GITHUB (NUEVO) -->
+                    <div class="form-group" style="background: #fffbeb; padding: 15px; border-radius: 8px; border: 2px solid #fbbf24;">
+                        <label for="githubToken"><i class="fas fa-key"></i> Token de GitHub (OPCIONAL)</label>
+                        <input type="password" id="githubToken" placeholder="ghp_abc123..." style="font-family: monospace;">
+                        <small style="color: #92400e; display: block; margin-top: 5px;">
+                            Solo necesario para subir automáticamente. 
+                            <a href="https://github.com/settings/tokens" target="_blank" style="color: #2563eb;">
+                                Obtener token aquí
+                            </a>
+                        </small>
+                    </div>
+
                     <div class="form-actions" style="display: flex; gap: 15px; margin-top: 30px;">
                         <button class="btn btn-primary" style="flex: 1;" onclick="saveProduct()">
                             <i class="fas fa-save"></i> Guardar Producto
                         </button>
                         <button class="btn" style="flex: 1; background: #f1f5f9;" onclick="clearForm()">
                             <i class="fas fa-eraser"></i> Limpiar
+                        </button>
+                        <!-- NUEVO BOTÓN PARA SUBIR A GITHUB -->
+                        <button class="btn" style="flex: 1; background: #238636; color: white;" 
+                                onclick="uploadToGitHub()" id="uploadBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Subir a GitHub
                         </button>
                     </div>
                 </div>
@@ -560,6 +599,16 @@
                     document.getElementById('imageFileName').value = name + '.jpg';
                 }
             });
+
+            // Configurar validación de token
+            document.getElementById('githubToken').addEventListener('input', checkTokenValidity);
+
+            // Cargar token guardado si existe
+            const savedToken = localStorage.getItem('baratelli_github_token');
+            if (savedToken) {
+                document.getElementById('githubToken').value = savedToken;
+                checkTokenValidity();
+            }
         });
 
         // Configurar subida de imágenes
@@ -711,7 +760,7 @@
             clearForm();
 
             // Mostrar mensaje
-            alert(`✅ Producto "${name}" guardado correctamente.\n\nRecordá descargar las imágenes y subirlas a GitHub.`);
+            alert(`✅ Producto "${name}" guardado correctamente.\n\nPodés subirlo a GitHub ahora o más tarde.`);
 
             // Cambiar a pestaña de productos
             switchTab('browse');
@@ -885,6 +934,142 @@
                     console.error('Error copiando:', err);
                     alert('❌ Error al copiar. Podés copiar manualmente desde la caja de arriba.');
                 });
+        }
+
+        // Función para subir automáticamente a GitHub
+        function uploadToGitHub() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = 'Baratelli/Baratelli';
+            const filePath = 'products.json';
+            
+            if (!token) {
+                alert('⚠️ Ingresá tu token de GitHub primero.\n\nVe a: GitHub → Settings → Tokens');
+                document.getElementById('githubToken').focus();
+                return;
+            }
+
+            // Guardar token para futuros usos
+            localStorage.setItem('baratelli_github_token', token);
+            
+            // Mostrar indicador de carga
+            const btn = document.getElementById('uploadBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner loading"></i> Subiendo...';
+            btn.disabled = true;
+            
+            // Obtener JSON actualizado (sin imágenes base64)
+            const productsForJSON = products.map(p => {
+                const { imageData, ...rest } = p;
+                return rest;
+            });
+            
+            const content = JSON.stringify(productsForJSON, null, 2);
+            
+            // Codificar en base64
+            const encodedContent = btoa(unescape(encodeURIComponent(content)));
+            
+            // Primero, obtener el SHA del archivo actual (necesario para actualizar)
+            fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo acceder al repositorio. Verificá el token y los permisos.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const sha = data.sha; // SHA del archivo actual
+                
+                // Hacer commit con el nuevo contenido
+                return fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        message: `Actualización productos: ${new Date().toLocaleString()}`,
+                        content: encodedContent,
+                        sha: sha // Esto actualiza el archivo existente
+                    })
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.commit) {
+                    // Restaurar botón
+                    btn.innerHTML = '<i class="fas fa-check"></i> ¡Subido!';
+                    btn.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '#238636';
+                        btn.disabled = false;
+                    }, 3000);
+                    
+                    alert(`✅ ¡Productos subidos a GitHub!\n\n📦 ${products.length} productos\n🕐 Se actualizará el catálogo en 1-2 minutos.\n\nCommit: ${data.commit.sha.substring(0, 7)}`);
+                    
+                } else {
+                    throw new Error(data.message || 'Error desconocido');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Restaurar botón
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                
+                alert(`❌ Error al subir:\n\n${error.message}\n\nVerifica:\n1. Token válido con permisos "repo"\n2. Conexión a internet\n3. Que el repositorio exista: ${repo}`);
+            });
+        }
+
+        // Verificar token de GitHub
+        function checkTokenValidity() {
+            const token = document.getElementById('githubToken').value.trim();
+            const input = document.getElementById('githubToken');
+            
+            // Guardar token
+            if (token) {
+                localStorage.setItem('baratelli_github_token', token);
+            }
+            
+            if (token.length > 10 && token.startsWith('ghp_')) {
+                input.classList.add('token-valid');
+                
+                // Verificar token contra GitHub (opcional, sin bloquear)
+                fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${token}`
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        input.style.borderColor = '#10b981';
+                        input.style.background = '#f0fdf4';
+                    } else {
+                        input.style.borderColor = '#ef4444';
+                        input.style.background = '#fef2f2';
+                    }
+                })
+                .catch(() => {
+                    // Ignorar errores de conexión
+                });
+            } else {
+                input.classList.remove('token-valid');
+                input.style.borderColor = '';
+                input.style.background = '';
+            }
         }
 
         // Limpiar formulario
