@@ -574,39 +574,51 @@
                 height: 300px;
             }
 
-            nav a[href*="tracking"] {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px; /* Espacio entre el emoji y el texto */
-  
-  /* Colores y Estilo */
-  background-color: #2563eb;
-  color: #ffffff !important; /* Asegura que el texto sea blanco */
-  padding: 10px 18px;
-  border-radius: 8px;
-  
-  /* Tipografía */
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none; /* Quita el subrayado azul por defecto */
-  
-  /* Animación y Sombra */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            /* --- ESTILO PARA EL BOTÓN RASTREAR PEDIDO --- */
+nav {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: white;
 }
 
-/* Efecto al pasar el mouse */
+nav a[href*="tracking"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    /* Colores: Usamos el azul de tu header para coherencia */
+    background: #2563eb;
+    color: white !important;
+    
+    /* Forma y Espaciado */
+    padding: 8px 16px;
+    border-radius: 50px; /* Forma de cápsula igual a tus categorías */
+    margin-right: 15px; /* Separa el botón del texto que sigue */
+    
+    /* Texto */
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap; /* Evita que el texto se rompa */
+    
+    /* Sombra y Animación */
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Efectos */
 nav a[href*="tracking"]:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-  text-decoration: none;
+    background: #1e40af;
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
 }
 
-/* Efecto al hacer clic */
-nav a[href*="tracking"]:active {
-  transform: translateY(0);
+/* Ajuste para que "Últimas Unidades" no se pegue */
+nav span, nav p {
+    font-size: 14px;
+    color: #333;
 }
         }
     </style>
@@ -1048,6 +1060,7 @@ nav a[href*="tracking"]:active {
     </script>
 </body>
 </html>
+
 
 
 
