@@ -328,6 +328,37 @@
             animation: spin 1s linear infinite;
         }
 
+        /* Notificaciones */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .form-section {
@@ -524,11 +555,14 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div>
-                        <h4>Preparar las imágenes</h4>
-                        <p>Todas las imágenes que subiste están en tu navegador. Necesitás guardarlas en tu computadora:</p>
-                        <button class="btn" onclick="downloadAllImages()" style="margin-top: 10px;">
+                        <h4>Guardar imágenes localmente</h4>
+                        <p>Primero, descargá las imágenes de los productos que subiste:</p>
+                        <button class="btn btn-primary" onclick="downloadAllImages()" style="margin-top: 10px;">
                             <i class="fas fa-download"></i> Descargar todas las imágenes
                         </button>
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            Las imágenes se guardarán en tu carpeta de descargas.
+                        </p>
                     </div>
                 </div>
 
@@ -536,11 +570,11 @@
                     <div class="step-number">2</div>
                     <div>
                         <h4>Subir imágenes a GitHub</h4>
-                        <p>Ve a tu repositorio y crea la carpeta <code>product-images</code> si no existe:</p>
+                        <p>Ve a tu repositorio y sube las imágenes:</p>
                         <ol style="margin-top: 10px; padding-left: 20px;">
-                            <li>Ve a <code>https://github.com/Baratelli/Baratelli</code></li>
+                            <li>Ve a <a href="https://github.com/Baratelli/Baratelli" target="_blank">tu repositorio</a></li>
                             <li>Haz clic en "Add file" → "Upload files"</li>
-                            <li>Arrastra todas las imágenes descargadas</li>
+                            <li>Arrastra todas las imágenes descargadas a la carpeta <code>product-images</code></li>
                             <li>Haz commit con el mensaje: "Agregar imágenes de productos"</li>
                         </ol>
                     </div>
@@ -549,22 +583,50 @@
                 <div class="step">
                     <div class="step-number">3</div>
                     <div>
-                        <h4>Actualizar products.json</h4>
-                        <p>Copiá el siguiente JSON y reemplazá el contenido de <code>products.json</code> en GitHub:</p>
-                        <button class="btn btn-primary" onclick="copyProductsJSON()" style="margin-top: 10px;">
-                            <i class="fas fa-copy"></i> Copiar JSON de productos
-                        </button>
+                        <h4>Subir JSON automáticamente</h4>
+                        <p>Usá el botón para subir el archivo products.json a GitHub:</p>
+                        <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                            <p><strong>Requisitos:</strong></p>
+                            <ol style="margin-top: 10px; padding-left: 20px;">
+                                <li>Token de GitHub con permisos "repo"</li>
+                                <li>Imágenes ya subidas al repositorio</li>
+                            </ol>
+                            <button class="btn btn-primary" onclick="uploadToGitHub()" style="margin-top: 15px; width: 100%;">
+                                <i class="fas fa-cloud-upload-alt"></i> Subir JSON a GitHub
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">4</div>
                     <div>
-                        <h4>Actualizar index.html</h4>
-                        <p>Modificá tu <code>index.html</code> para que muestre las imágenes. Cambiá el código que muestra productos para incluir:</p>
-                        <pre style="background: #f1f5f9; padding: 10px; border-radius: 5px; margin-top: 10px;">
-&lt;img src="product-images/NOMBRE-ARCHIVO.jpg" alt="Nombre producto"&gt;</pre>
+                        <h4>Verificar cambios</h4>
+                        <p>Después de subir:</p>
+                        <ol style="margin-top: 10px; padding-left: 20px;">
+                            <li>Espera 1-2 minutos para que GitHub Pages se actualice</li>
+                            <li>Visita tu catálogo: <a href="https://baratelli.github.io/Baratelli" target="_blank">baratelli.github.io/Baratelli</a></li>
+                            <li>Verifica que las imágenes y productos se muestren correctamente</li>
+                        </ol>
                     </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <div style="flex: 1; background: #f0f9ff; padding: 20px; border-radius: 10px;">
+                    <h4><i class="fas fa-robot"></i> Subida Automática</h4>
+                    <p>Con el token configurado, podés subir los cambios con un solo clic.</p>
+                    <button class="btn" onclick="uploadToGitHub()" style="margin-top: 10px; width: 100%; background: #238636; color: white;">
+                        <i class="fas fa-cloud-upload-alt"></i> Subir Todo a GitHub
+                    </button>
+                </div>
+                
+                <div style="flex: 1; background: #fef3c7; padding: 20px; border-radius: 10px;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Nota Importante</h4>
+                    <p>Las imágenes deben subirse manualmente a GitHub. El JSON se sube automáticamente.</p>
+                    <button class="btn" onclick="downloadAllImages()" style="margin-top: 10px; width: 100%;">
+                        <i class="fas fa-download"></i> Descargar Imágenes
+                    </button>
                 </div>
             </div>
 
@@ -727,12 +789,12 @@
 
             // Validaciones
             if (!name || !price || !stock || !category || !imageFileName) {
-                alert('Por favor completá todos los campos obligatorios');
+                showNotification('Completá todos los campos obligatorios', 'error');
                 return;
             }
 
             if (!currentImage) {
-                alert('Por favor seleccioná una imagen para el producto');
+                showNotification('Seleccioná una imagen para el producto', 'error');
                 return;
             }
 
@@ -760,7 +822,7 @@
             clearForm();
 
             // Mostrar mensaje
-            alert(`✅ Producto "${name}" guardado correctamente.\n\nPodés subirlo a GitHub ahora o más tarde.`);
+            showNotification(`✅ Producto "${name}" guardado correctamente`, 'success');
 
             // Cambiar a pestaña de productos
             switchTab('browse');
@@ -778,6 +840,7 @@
                     updateJSONPreview();
                 } catch (e) {
                     console.error('Error cargando productos:', e);
+                    showNotification('Error cargando productos', 'error');
                 }
             }
         }
@@ -896,25 +959,36 @@
         // Descargar todas las imágenes
         function downloadAllImages() {
             if (products.length === 0) {
-                alert('No hay productos con imágenes para descargar');
+                showNotification('No hay productos con imágenes para descargar', 'warning');
                 return;
             }
 
-            // Crear un ZIP con todas las imágenes
-            alert('Para descargar las imágenes:\n\n1. Guardá cada imagen haciendo clic derecho sobre ella\n2. O usá la pestaña "Ver Productos" para ver todas');
-
-            // Alternativa: crear enlaces de descarga
-            products.forEach(product => {
+            let downloaded = 0;
+            
+            // Descargar cada imagen
+            products.forEach((product, index) => {
                 if (product.imageData) {
-                    const link = document.createElement('a');
-                    link.href = product.imageData;
-                    link.download = product.image;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.href = product.imageData;
+                        link.download = product.image;
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        downloaded++;
+                        
+                        if (downloaded === products.filter(p => p.imageData).length) {
+                            showNotification(`✅ ${downloaded} imágenes descargadas`, 'success');
+                        }
+                    }, index * 100); // Pequeño delay para no saturar
                 }
             });
+
+            if (downloaded === 0) {
+                showNotification('No hay imágenes para descargar', 'warning');
+            }
         }
 
         // Copiar JSON de productos
@@ -928,11 +1002,11 @@
 
             navigator.clipboard.writeText(jsonString)
                 .then(() => {
-                    alert('✅ JSON copiado al portapapeles.\n\nAhora andá a GitHub y reemplazá el contenido de products.json con este JSON.');
+                    showNotification('✅ JSON copiado al portapapeles', 'success');
                 })
                 .catch(err => {
                     console.error('Error copiando:', err);
-                    alert('❌ Error al copiar. Podés copiar manualmente desde la caja de arriba.');
+                    showNotification('❌ Error al copiar', 'error');
                 });
         }
 
@@ -943,8 +1017,13 @@
             const filePath = 'products.json';
             
             if (!token) {
-                alert('⚠️ Ingresá tu token de GitHub primero.\n\nVe a: GitHub → Settings → Tokens');
+                showNotification('⚠️ Ingresá tu token de GitHub primero', 'warning');
                 document.getElementById('githubToken').focus();
+                return;
+            }
+
+            if (products.length === 0) {
+                showNotification('No hay productos para subir', 'warning');
                 return;
             }
 
@@ -993,7 +1072,7 @@
                         'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify({
-                        message: `Actualización productos: ${new Date().toLocaleString()}`,
+                        message: `📦 Actualización productos: ${new Date().toLocaleString()} - ${products.length} productos`,
                         content: encodedContent,
                         sha: sha // Esto actualiza el archivo existente
                     })
@@ -1017,7 +1096,10 @@
                         btn.disabled = false;
                     }, 3000);
                     
-                    alert(`✅ ¡Productos subidos a GitHub!\n\n📦 ${products.length} productos\n🕐 Se actualizará el catálogo en 1-2 minutos.\n\nCommit: ${data.commit.sha.substring(0, 7)}`);
+                    showNotification(`✅ ${products.length} productos subidos a GitHub. El catálogo se actualizará en 1-2 minutos.`, 'success');
+                    
+                    // Mostrar info del commit
+                    console.log('Commit realizado:', data.commit.html_url);
                     
                 } else {
                     throw new Error(data.message || 'Error desconocido');
@@ -1030,7 +1112,7 @@
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
                 
-                alert(`❌ Error al subir:\n\n${error.message}\n\nVerifica:\n1. Token válido con permisos "repo"\n2. Conexión a internet\n3. Que el repositorio exista: ${repo}`);
+                showNotification(`❌ Error al subir: ${error.message}`, 'error');
             });
         }
 
@@ -1057,9 +1139,11 @@
                     if (response.ok) {
                         input.style.borderColor = '#10b981';
                         input.style.background = '#f0fdf4';
+                        showNotification('✅ Token válido', 'success');
                     } else {
                         input.style.borderColor = '#ef4444';
                         input.style.background = '#fef2f2';
+                        showNotification('❌ Token inválido', 'error');
                     }
                 })
                 .catch(() => {
@@ -1070,6 +1154,36 @@
                 input.style.borderColor = '';
                 input.style.background = '';
             }
+        }
+
+        // Mostrar notificación
+        function showNotification(message, type = 'info') {
+            // Eliminar notificaciones anteriores
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-eliminar después de 5 segundos
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 5000);
         }
 
         // Limpiar formulario
@@ -1111,7 +1225,7 @@
                 document.getElementById('imagePreview').style.display = 'block';
             }
 
-            alert('Modo edición: Cambiá los datos y guardá para actualizar.');
+            showNotification('Modo edición: Cambiá los datos y guardá para actualizar.', 'info');
         }
 
         // Eliminar producto
@@ -1125,7 +1239,7 @@
             updateProductCount();
             updateJSONPreview();
 
-            alert('Producto eliminado');
+            showNotification('Producto eliminado', 'success');
         }
 
         // Configurar búsqueda en tiempo real
