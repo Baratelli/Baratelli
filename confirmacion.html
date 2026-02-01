@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido Confirmado - Baratelli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .confirmacion {
+            background: #f0f8ff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .pedido-id {
+            font-size: 24px;
+            font-weight: bold;
+            color: #06FFA5;
+            margin: 20px 0;
+        }
+        .btn-tracking {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #06FFA5;
+            color: #0A0E27;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn-tracking:hover {
+            background: #05dd8e;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmacion">
+        <h1>✅ ¡Pedido Confirmado!</h1>
+        <p>Tu pedido ha sido registrado exitosamente.</p>
+        
+        <div class="pedido-id" id="pedidoId">
+            PEDIDO-123456
+        </div>
+        
+        <p>Guarda este ID para rastrear tu pedido.</p>
+        
+        <a href="#" id="trackingLink" class="btn-tracking">
+            📍 Ver Ubicación en Tiempo Real
+        </a>
+        
+        <br><br>
+        <a href="index.html">Volver al inicio</a>
+    </div>
+    
+    <script>
+        // Leer pedido del localStorage
+        const pedido = JSON.parse(localStorage.getItem('ultimoPedido') || '{}');
+        if (pedido.id) {
+            document.getElementById('pedidoId').textContent = pedido.id;
+            document.getElementById('trackingLink').href = 
+                `src/tracking/cliente.html?id=${pedido.id}`;
+        }
+    </script>
+</body>
+</html>
