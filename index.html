@@ -839,19 +839,50 @@ function renderFilteredProducts(filteredProducts) {
 }
 
     function addToCart(productId) {
-        const product = products.find(p => p.id === productId);
-        const qty = parseInt(document.getElementById(`qty-${productId}`).value);
-        const existing = cart.find(item => item.id === productId);
-        if (existing) { 
-            existing.quantity += qty; 
-        } else { 
-            cart.push({ ...product, quantity: qty }); 
-        }
-        updateCartBadge();
-        const btn = event.currentTarget;
-        btn.innerHTML = '✅';
-        setTimeout(() => btn.innerHTML = '🛒', 800);
+    const product = products.find(p => p.id === productId);
+    const qtyInput = document.getElementById(`qty-${productId}`);
+    const qty = parseInt(qtyInput.value);
+    
+    // VALIDACIÓN CRÍTICA: No superar stock disponible
+    if (qty > product.stock) {
+        alert(`❌ No hay suficiente stock.\nStock disponible: ${product.stock} unidades`);
+        qtyInput.value = product.stock; // Ajusta al máximo disponible
+        return;
     }
+    
+    // Verificar si ya está en el carrito
+    const existing = cart.find(item => item.id === productId);
+    
+    // VALIDACIÓN: Stock total (carrito + nuevo)
+    const totalInCart = existing ? existing.quantity : 0;
+    if (totalInCart + qty > product.stock) {
+        const available = product.stock - totalInCart;
+        alert(`❌ Stock insuficiente.\nYa tienes ${totalInCart} en el carrito.\nPuedes agregar máximo ${available} más.`);
+        return;
+    }
+    
+    // Agregar al carrito
+    if (existing) {
+        existing.quantity += qty;
+    } else {
+        cart.push({ ...product, quantity: qty });
+    }
+    
+    // Actualizar interfaz
+    updateCartBadge();
+    updateStockDisplay(productId, product.stock);
+    
+    // Feedback visual
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '✅ Agregado';
+    btn.style.background = '#10b981';
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+    }, 1500);
+}
 
     function updateCartBadge() { 
         document.getElementById('cartBadge').textContent = cart.reduce((s, i) => s + i.quantity, 0); 
@@ -925,6 +956,7 @@ function renderFilteredProducts(filteredProducts) {
 </body>
 
 </html>
+
 
 
 
