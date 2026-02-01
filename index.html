@@ -831,12 +831,27 @@ function renderFilteredProducts(filteredProducts) {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-            <!-- CONTENEDOR DE IMAGEN -->
-            <div style="...">
+            <!-- CONTENEDOR DE IMAGEN (MISMO QUE EN renderProducts) -->
+            <div style="
+                height: 200px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+                margin-bottom: 15px;
+                background: #f8fafc;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid #e2e8f0;
+            ">
                 ${product.image ? 
                     `<img src="product-images/${product.image}" 
                           alt="${product.name}" 
-                          style="...">` : 
+                          style="
+                            max-width: 100%;
+                            max-height: 100%;
+                            object-fit: contain;
+                            padding: 10px;
+                          ">` : 
                     `<div style="font-size: 4em; opacity: 0.5;">${product.icon || '📦'}</div>`
                 }
             </div>
@@ -844,6 +859,18 @@ function renderFilteredProducts(filteredProducts) {
             <div class="product-name">${product.name}</div>
             <div class="product-price">$${p1.toLocaleString()}</div>
             <div class="product-price-from3">✨ 3+ unidades: $${p3.toLocaleString()}</div>
+            <div class="stock-display" style="font-size: 0.85em; margin-bottom: 10px;">
+                📦 Stock: 
+                <span style="
+                    font-weight: bold;
+                    color: ${product.stock === 0 ? '#ef4444' : 
+                            product.stock < 5 ? '#ef4444' : 
+                            product.stock < 10 ? '#f59e0b' : '#10b981'};
+                ">
+                    ${product.stock} unidades
+                </span>
+                ${product.stock < 5 ? '⚠️' : product.stock < 10 ? '🔸' : '✅'}
+            </div>
             <div class="product-actions">
                 <div class="quantity-controls">
                     <button class="quantity-btn" onclick="changeQuantity(${product.id}, -1)">-</button>
@@ -856,6 +883,7 @@ function renderFilteredProducts(filteredProducts) {
     });
     
     container.appendChild(grid);
+}
 }
 
     function changeQuantity(productId, delta) {
@@ -996,6 +1024,7 @@ function renderFilteredProducts(filteredProducts) {
 </body>
 
 </html>
+
 
 
 
