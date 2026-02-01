@@ -695,6 +695,31 @@
             return Math.ceil((p1 - 100) / 100) * 100;
         }
 
+        function confirmarPedido() {
+    // Tu lógica actual de pedido
+    const numeroPedido = Date.now(); // O como generes el número
+    const pedidoId = 'PEDIDO-' + numeroPedido;
+    
+    // Guardar pedido en localStorage (o donde lo guardes)
+    const pedido = {
+        id: pedidoId,
+        productos: carrito,
+        total: calcularTotal(),
+        fecha: new Date().toISOString()
+    };
+    
+    localStorage.setItem('ultimoPedido', JSON.stringify(pedido));
+    
+    // Mostrar mensaje de confirmación
+    alert('¡Pedido confirmado! ID: ' + pedidoId);
+    
+    // NUEVO: Opción para tracking
+    const verTracking = confirm('¿Deseas rastrear tu pedido en tiempo real?');
+    if (verTracking) {
+        window.location.href = `src/tracking/cliente.html?id=${pedidoId}`;
+    }
+}
+
         function renderProducts() {
             const container = document.getElementById('productsContainer');
             container.innerHTML = '';
@@ -985,3 +1010,4 @@
     </script>
 </body>
 </html>
+
