@@ -560,6 +560,17 @@
         if (firebaseConfig.apiKey === "TU_API_KEY_AQUI") {
             showAlert('⚠️ IMPORTANTE: Debes configurar Firebase. Lee las instrucciones abajo.', 'error');
         }
+
+        // NUEVO: Auto-cargar ID desde URL
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idFromUrl = urlParams.get('id');
+    
+    if (idFromUrl) {
+        document.getElementById('deliveryId').value = idFromUrl;
+        showAlert('ID cargado: ' + idFromUrl, 'info');
+    }
+});
     </script>
 </body>
 </html>
