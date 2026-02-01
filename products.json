@@ -1,7 +1,7 @@
 [
   {
     "id": 1769901352326,
-    "name": "Aceite Girasol 900ML",
+    "name": "Aceite Girasol 1.5L",
     "price": "2200.00",
     "stock": 50,
     "category": "Almacén",
@@ -34,5 +34,14 @@
     "category": "Almacén",
     "image": "azucar-tikay.jpg",
     "description": "Azúcar la tikay 1kg"
+  },
+  {
+    "id": 1769909629007,
+    "name": "Galletitas de agua Pindy x3",
+    "price": "900.00",
+    "stock": 10,
+    "category": "Almacén",
+    "image": "galletitaspindy.png",
+    "description": "Galletitas de agua Pindy x3"
   }
 ]
