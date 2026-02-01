@@ -9,15 +9,6 @@
     "description": "Aceite de girasol refinado 1.5 litros"
   },
   {
-    "id": 1769901906991,
-    "name": "Agua Mineral Villamanaos",
-    "price": "2000.00",
-    "stock": 10,
-    "category": "Almacén",
-    "image": "villamanaos_6lts.webp",
-    "description": "Agua mineral villamanaos"
-  },
-  {
     "id": 1769903129729,
     "name": "Fideo Marolio Mostachol Rayado",
     "price": "700.00",
@@ -25,5 +16,23 @@
     "category": "Almacén",
     "image": "fideo-marolio-m-rayado.jpg",
     "description": "Fideos Marolio"
+  },
+  {
+    "id": 1769904923352,
+    "name": "Agua Mineral Villamanaos",
+    "price": "2000.00",
+    "stock": 10,
+    "category": "Bebidas",
+    "image": "villamanaos_6lts.webp",
+    "description": "Agua mineral villamanaos"
+  },
+  {
+    "id": 1769908893689,
+    "name": "Azúcar Tikay 1KG",
+    "price": "1000.00",
+    "stock": 50,
+    "category": "Almacén",
+    "image": "azucar-tikay.jpg",
+    "description": "Azúcar la tikay 1kg"
   }
 ]
