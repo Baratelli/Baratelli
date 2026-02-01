@@ -574,54 +574,40 @@
                 height: 300px;
             }
 
-            .navbar {
-  display: flex;
+            nav a[href*="tracking"] {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-/* El Botón de Seguimiento */
-.btn-follow {
-  appearance: none;
-  background-color: var(--primary-color);
-  border: 1px solid transparent;
-  border-radius: 8px; /* Bordes suavizados */
-  color: var(--text-light);
-  cursor: pointer;
-  display: inline-block;
-  font-family: 'Inter', -apple-system, sans-serif; /* Tipografía limpia */
+  gap: 8px; /* Espacio entre el emoji y el texto */
+  
+  /* Colores y Estilo */
+  background-color: #2563eb;
+  color: #ffffff !important; /* Asegura que el texto sea blanco */
+  padding: 10px 18px;
+  border-radius: 8px;
+  
+  /* Tipografía */
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: -0.01em;
-  padding: 10px 20px;
-  text-align: center;
-  transition: var(--transition);
-  user-select: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  text-decoration: none; /* Quita el subrayado azul por defecto */
+  
+  /* Animación y Sombra */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Efecto Hover (al pasar el ratón) */
-.btn-follow:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px); /* Elevación sutil */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* Efecto al pasar el mouse */
+nav a[href*="tracking"]:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  text-decoration: none;
 }
 
-/* Efecto Active (al hacer clic) */
-.btn-follow:active {
-  background-color: var(--primary-hover);
+/* Efecto al hacer clic */
+nav a[href*="tracking"]:active {
   transform: translateY(0);
-  box-shadow: none;
 }
-
-/* Estado "Siguiendo" (opcional, si cambias la clase con JS) */
-.btn-follow.following {
-  background-color: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
         }
     </style>
 </head>
@@ -1062,6 +1048,7 @@
     </script>
 </body>
 </html>
+
 
 
 
