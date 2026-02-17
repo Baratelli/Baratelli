@@ -1,14 +1,5 @@
 [
   {
-    "id": 1769901352326,
-    "name": "Aceite Girasol 1.5L",
-    "price": "2200.00",
-    "stock": 50,
-    "category": "Almacén",
-    "image": "aceite-mezcla-siglo-del-oro.webp",
-    "description": "Aceite de girasol refinado 1.5 litros"
-  },
-  {
     "id": 1769903129729,
     "name": "Fideo Marolio Mostachol Rayado",
     "price": "700.00",
@@ -52,5 +43,14 @@
     "category": "Fideos",
     "image": "fideo-marolio-m-rayado.jpg",
     "description": "Fideos Marolio"
+  },
+  {
+    "id": 1771361100606,
+    "name": "Aceite Girasol 900ML",
+    "price": "2200.00",
+    "stock": 50,
+    "category": "Almacén",
+    "image": "aceite-girasol-900ml.jpg",
+    "description": "Aceite de girasol refinado 900ML"
   }
 ]
