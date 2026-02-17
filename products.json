@@ -43,14 +43,5 @@
     "category": "Fideos",
     "image": "fideo-marolio-m-rayado.jpg",
     "description": "Fideos Marolio"
-  },
-  {
-    "id": 1771361100606,
-    "name": "Aceite Mezcla 900ML",
-    "price": "2500.00",
-    "stock": 50,
-    "category": "Almacén",
-    "image": "aceite-mezcla-siglo-del-oro.webp",
-    "description": "Aceite de mezcla 900ML"
   }
 ]
