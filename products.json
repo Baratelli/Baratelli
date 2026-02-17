@@ -34,5 +34,14 @@
     "category": "Almacén",
     "image": "galletitaspindy.png",
     "description": "Galletitas de agua Pindy x3"
+  },
+  {
+    "id": 1771361953142,
+    "name": "Aceite Mezcla 900ML",
+    "price": "2500.00",
+    "stock": 30,
+    "category": "Almacén",
+    "image": "aceite-mezcla-siglo-del-oro.webp",
+    "description": "Aceite Mezcla Siglo de Oro 900ML"
   }
 ]
