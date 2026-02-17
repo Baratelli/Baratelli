@@ -34,14 +34,5 @@
     "category": "Almacén",
     "image": "galletitaspindy.png",
     "description": "Galletitas de agua Pindy x3"
-  },
-  {
-    "id": 1769911244155,
-    "name": "Fideo Marolio Mostachol Rayado",
-    "price": "700.00",
-    "stock": 100,
-    "category": "Fideos",
-    "image": "fideo-marolio-m-rayado.jpg",
-    "description": "Fideos Marolio"
   }
 ]
